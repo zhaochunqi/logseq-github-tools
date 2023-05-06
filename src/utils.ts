@@ -1,5 +1,6 @@
 import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
 import React from "react";
+import dayjs from "dayjs";
 
 let _visible = logseq.isMainUIVisible;
 
@@ -41,6 +42,21 @@ export const updateCurrentPageProperty = () => {
         const properties_uuid = data[0].uuid;
         logseq.Editor.upsertBlockProperty(properties_uuid, "url", github_url);
       });
-    }
-  });
-};
+
+      const github_commits = `https://api.github.com/repos/${match[1]}/${match[2]}/commits`;
+      fetch(github_commits)
+        .then((response) => response.json())
+        .then((commits) => {
+          const last_commit_raw = commits[0].commit.author.date;
+          const date = new Date(last_commit_raw);
+          //change date style to yyyy-MM-dd EEEE style
+          const last_commit = dayjs(date).format("YYYY-MM-DD dddd");
+          logseq.Editor.getPageBlocksTree(uuid!).then((data) => {
+            const properties_uuid = data[0].uuid;
+            logseq.Editor.upsertBlockProperty(properties_uuid, "last", `[[${last_commit}]]`);
+          });
+    });
+  }
+})
+}
+
