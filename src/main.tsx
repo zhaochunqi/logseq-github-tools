@@ -6,6 +6,8 @@ import App from "./App";
 import "./index.css";
 
 import { logseq as PL } from "../package.json";
+import { log } from "console";
+import { updateCurrentPageProperty } from "./utils";
 
 // @ts-expect-error
 const css = (t, ...args) => String.raw(t, ...args);
@@ -55,6 +57,17 @@ function main() {
       <div data-on-click="show" class="${openIconName}">⚙️</div>
     `,
   });
+
+  logseq.Editor.getCurrentPage().then((page) => {
+    console.log(page);
+  });
+
+  logseq.App.onRouteChanged( ({template}) => {
+    if(template == "/page/:name") {
+      console.log("page changed!");
+      updateCurrentPageProperty()
+    }
+  })
 }
 
 logseq.ready(main).catch(console.error);
