@@ -6,7 +6,6 @@ import App from "./App";
 import "./index.css";
 
 import { logseq as PL } from "../package.json";
-import { log } from "console";
 import { updateCurrentPageProperty } from "./utils";
 
 // @ts-expect-error
